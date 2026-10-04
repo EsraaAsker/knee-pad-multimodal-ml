@@ -57,7 +57,7 @@ Create a Python environment and install the required dependencies:
 pip install -r requirements.txt
 ```
 
-Use the versions specified in `requirements.txt`.
+Install the dependencies listed in `requirements.txt`.
 
 ## Data Setup
 
