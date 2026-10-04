@@ -134,7 +134,7 @@ def train_epochs(train_loader, val_loader, train_pos, device, epochs):
         if met["balanced_accuracy"] > best_score:
             best_score, best_epoch = met["balanced_accuracy"], ep
             best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-    return best_epoch, best_score, best_state
+    return best_epoch, best_score, best_state, history
 
 def train_fixed(train_loader, train_pos, device, epochs):
     model = Model().to(device); crit = criterion(train_pos, device)
@@ -166,13 +166,11 @@ for fold, (tr_idx, te_idx) in enumerate(outer_folds):
         em, es, im, ins = stats(gtr)
         tl = DataLoader(DS(gtr, em, es, im, ins, True), 64, True, num_workers=0)
         vl = DataLoader(DS(gva, em, es, im, ins), 128, False, num_workers=0)
-        ep, score, _ = train_epochs(tl, vl, tr_pos, device, EPOCHS)
-        for j, m in enumerate([evaluate(Model().to(device), vl, device)] if False else []): pass
+        ep, score, _, history = train_epochs(tl, vl, tr_pos, device, EPOCHS)
+        for j, metrics in enumerate(history):
+            scores[j] += metrics["balanced_accuracy"]
+            counts[j] += 1
         inner_rows.append({"outer_fold": fold, "inner_fold": inner_fold, "selected_epoch_inner_fold": ep, "best_inner_ba": score})
-
-        # Re-run epoch-wise scoring only through the selected run's recorded best score.
-        # The source protocol uses the inner-validation-selected epoch before outer evaluation.
-        scores[ep - 1] += score; counts[ep - 1] += 1
 
     selected_epoch = int(np.argmax(scores / np.maximum(counts, 1)) + 1)
     tr_trial_set = set(tr_trials.tid)
