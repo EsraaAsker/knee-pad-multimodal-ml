@@ -1,230 +1,156 @@
 # Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment
 
-Research code and evaluation artifacts associated with the study:
+## Overview
 
-> **Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment**
+This repository provides the preprocessing, training, evaluation, and analysis code associated with the study:
 
-This repository contains the reproducible code and selected result artifacts for multimodal wearable-sensing experiments on the public **KneE-PAD** rehabilitation dataset. The repository is intended as a research artifact accompanying the manuscript and is organized to make the data assumptions, experimental protocol, evaluation metrics, and reported results explicit.
+**“Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment.”**
 
-> **Artifact status.** This public release contains the currently validated multimodal training/evaluation implementation and its stored fold-level results. Raw participant recordings are intentionally excluded. Experimental families that are not represented by executable files in this repository are not claimed as reproducible here.
-
-## Research scope
-
-The study investigates rehabilitation exercise assessment using synchronized inertial (IMU) and surface electromyography (sEMG) signals. Rather than relying on a single aggregate accuracy value, the evaluation emphasizes:
-
-- exercise-level recognition;
-- execution/quality classification;
-- balanced accuracy and macro-F1 in addition to accuracy;
-- trial-level separation before overlapping windows are expanded;
-- train-fold-only normalization and class weighting;
-- sensor/modality considerations;
-- explicit reporting of the evaluation protocol.
-
-The repository is a **research artifact**, not a clinical diagnostic system.
+The repository is organized according to the experimental framework described in the paper and includes code for exercise recognition, execution-quality assessment, participant-independent evaluation, sensor-reduction analysis, and result generation.
 
 ## Dataset
 
-Experiments use the publicly available **KneE-PAD** dataset:
+The study uses the publicly available **KneE-PAD** dataset:
 
-Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, G.,  
-*A Knee Rehabilitation Exercises Dataset for Postural Assessment using Wearable Devices*,  
+Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, G.,
+“A Knee Rehabilitation Exercises Dataset for Postural Assessment using Wearable Devices,”
 Scientific Data, 2025.
+DOI: **10.1038/s41597-025-04963-4**
 
-**DOI:** https://doi.org/10.1038/s41597-025-04963-4
+The dataset is **not redistributed in this repository**. Users should obtain the dataset from its official publication/source and place the required files in the local data directory before running the provided scripts.
 
-The dataset is **not redistributed** in this repository. Users must obtain it from the original publication/source and comply with the dataset's terms of use and citation requirements.
+## Repository Contents
 
-Expected processed inputs include synchronized IMU and EMG arrays together with labels, trial identifiers, and subject identifiers.
+- `code/preprocessing/` — data preparation, segmentation, and preprocessing.
+- `code/training/` — model training scripts.
+- `code/evaluation/` — validation and performance evaluation.
+- `code/analysis/` — aggregation, diagnostics, and result analysis.
+- `configs/` — experiment settings and reproducibility parameters.
+- `results/` — generated summaries and diagnostic outputs.
+- `figures/` — figures associated with the reported analyses.
 
-## Repository contents
+## Experimental Protocols
 
-| Path | Purpose |
-|---|---|
-| `train_multimodal_dl.py` | Multimodal EMG–IMU training/evaluation workflow |
-| `train_levels.py` | Level-1 exercise and Level-3 joint exercise/quality workflow |
-| `level1_fold_metrics.csv` | Stored five-fold Level-1 metrics |
-| `level3_fold_metrics.csv` | Stored five-fold Level-3 metrics |
-| `levels_summary.csv` | Mean and standard-deviation summary of stored metrics |
-| `.gitignore` | Prevents raw data, generated arrays, checkpoints, and environments from being committed |
-| `requirements.txt` | Python dependencies |
+The repository contains the implementations corresponding to the two experimental families described in the paper:
 
-## Experimental protocol represented in this release
+### Archived Conventional-Validation Family
 
-### Trial-held-out multimodal evaluation
+This family contains the archived development experiments, including engineered-feature reference results and raw-sequence deep-learning benchmark artifacts used for comparison in the manuscript.
 
-The supplied training workflow constructs folds at the **raw trial level before overlapping windows are expanded**. This prevents windows originating from the same trial from appearing in both training and test partitions.
+### Strict Participant-Independent Family
 
-Normalization statistics and class weights are computed from the training portion of each fold.
+This family contains the participant-independent evaluation used to assess generalization to unseen participants, including the CNN--Transformer experiments and predefined IMU sensor configurations.
 
-The model consists of:
-
-1. an EMG temporal convolutional branch;
-2. an IMU temporal convolutional branch;
-3. feature projection and temporal alignment;
-4. a two-layer, eight-head Transformer encoder;
-5. attention pooling;
-6. a task-specific classification head.
-
-Training uses AdamW, cosine learning-rate scheduling, gradient clipping, class-weighted cross-entropy, and label smoothing. The implementation also applies small Gaussian signal augmentation during training.
-
-### Level-1 and Level-3 workflow
-
-`train_levels.py` evaluates:
-
-- **Level 1:** three exercise/activity classes;
-- **Level 3:** nine joint exercise/quality classes.
-
-The stored results use five stratified trial-level folds and 18 training epochs.
-
-## Reported stored results
-
-The following values are calculated from the committed fold-level CSV artifacts.
-
-| Task | Accuracy | Balanced Accuracy | Macro-F1 |
-|---|---:|---:|---:|
-| Level 1 — exercise/activity | 99.938% ± 0.092% | 99.944% ± 0.083% | 99.940% ± 0.086% |
-| Level 3 — joint exercise/quality | 71.193% ± 6.505% | 76.300% ± 4.515% | 76.433% ± 4.251% |
-
-The variation across folds is intentionally reported rather than hidden behind a single score.
+The two experimental families are intentionally kept separate because they use different evaluation protocols and should not be interpreted as interchangeable experiments.
 
 ## Reproducibility
 
-### 1. Create an environment
+The repository provides the experiment code and configuration information needed to reproduce the reported analyses from the publicly available dataset.
 
-```bash
-python -m venv .venv
-```
+Experiment settings include the relevant preprocessing parameters, windowing configuration, validation structure, random seeds, model settings, and class-weighting strategy used in the reported experiments.
 
-Linux/macOS:
+## Installation
 
-```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Install dependencies:
+Create a Python environment and install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Prepare the dataset
+Use the versions specified in `requirements.txt`.
 
-Do not place raw participant data in the Git repository.
+## Data Setup
 
-Prepare the official dataset into a local `deep_data/` directory containing the processed arrays expected by the scripts, including:
+After obtaining the KneE-PAD dataset from its official source, place the required files according to the expected directory structure documented in the preprocessing scripts/configuration.
 
-```
-deep_data/
-├── emg_official.dat
-├── imu_official.dat
-├── labels.npy
-├── trial_ids.npy
-└── subjects.npy
-```
+Do not include any dataset files in the GitHub repository.
 
-The array dimensions expected by the current implementation are documented in the source files.
+For the processed multimodal workflows, the expected local directory contains the processed IMU/EMG arrays together with labels, trial identifiers, and subject identifiers.
 
-### 3. Run the Level-1 / Level-3 workflow
+## Running the Experiments
 
-The current source implementation uses local paths from the original experimental environment. Before running on another machine, set the `ROOT` and `OUT` paths in `train_levels.py` to the local dataset/output locations.
+### 1. Preprocessing
 
-Then:
+The raw-data preparation scripts accept explicit paths. For example:
 
 ```bash
-python train_levels.py
+python code/preprocessing/build_deep_data_from_raw.py \
+  --raw /path/to/KneE-PAD \
+  --out data/processed/deep_data
 ```
 
-The script writes fold-level metrics and a run manifest to the configured output directory.
-
-### 4. Run the multimodal workflow
-
-Similarly configure the local `ROOT` and `OUT` paths in `train_multimodal_dl.py`, then:
+For the fixed Squat window representation:
 
 ```bash
-python train_multimodal_dl.py
+python code/preprocessing/build_fixed_squat_segments_multimodal.py \
+  --raw /path/to/KneE-PAD \
+  --out data/processed/fixed_squat_multimodal
 ```
 
-Environment variables supported by the current implementation include:
+### 2. Model training
+
+The main trial-level CNN--Transformer workflows are:
 
 ```bash
-TASK=multiclass
-FOLD_LIMIT=20
-EPOCHS=18
+KNEEPAD_DATA=data/processed/deep_data \
+KNEEPAD_OUT=results/levels \
+python code/training/train_levels.py
 ```
 
-For example, a one-fold pilot run can be performed with:
+and:
 
 ```bash
-FOLD_LIMIT=1 EPOCHS=1 python train_multimodal_dl.py
+KNEEPAD_DATA=data/processed/deep_data \
+KNEEPAD_OUT=results/dl_results \
+python code/training/train_multimodal_dl.py
 ```
 
-A pilot run is intended only for checking the software environment and data interface; it is **not** a substitute for the reported experiment.
+### 3. Participant-independent evaluation
 
-## Data leakage safeguards
+The strict participant-independent trainer uses participant-grouped outer folds and an inner grouped validation split for epoch selection. A full-sensor Squat configuration is run with:
 
-The evaluation code follows several safeguards relevant to overlapping physiological time-series:
+```bash
+KNEEPAD_DATA=data/processed/deep_data \
+KNEEPAD_OUT=results/strict \
+EXERCISE=0 USE_EMG=1 \
+SUBSET='[1,2,3,4,5,6,7,8]' \
+CONFIG=ex0_all_sensors SEED=2026 \
+python code/training/train_subject_predictions.py
+```
 
-- folds are assigned before segment expansion at the trial level;
-- normalization parameters are estimated from training data only;
-- class weights are derived from training data only;
-- test data are not used for parameter estimation;
-- generated binary arrays and checkpoints are excluded from version control.
+### 4. Sensor configuration evaluation
 
-These details should be considered part of the experimental definition when comparing results.
+The same participant-independent training script supports the predefined sensor configurations through `SUBSET`, for example a two-sensor configuration:
 
-## Metrics
+```bash
+KNEEPAD_DATA=data/processed/deep_data \
+KNEEPAD_OUT=results/strict \
+EXERCISE=0 USE_EMG=1 \
+SUBSET='[5,7]' \
+CONFIG=p57 SEED=2026 \
+python code/training/train_subject_predictions.py
+```
 
-The evaluation supports:
+### 5. Result aggregation and diagnostics
 
-- accuracy;
-- balanced accuracy;
-- macro-F1;
-- confusion matrices;
-- fold-level reporting;
-- segment-level predictions;
-- trial identifiers;
-- participant identifiers.
+Evaluation and analysis scripts in `code/evaluation/` and `code/analysis/` aggregate fold-level outputs, trial-level predictions, confusion matrices, and diagnostic summaries.
 
-Balanced accuracy and macro-F1 are reported alongside accuracy because class imbalance and unequal class difficulty can make aggregate accuracy misleading.
+## Reported Metrics
 
-## Reproducibility and artifact policy
+The repository supports the evaluation metrics reported in the paper, including:
 
-This repository intentionally does **not** contain:
+- Accuracy
+- Balanced Accuracy
+- Macro-F1
+- Precision
+- Recall
+- Confusion matrices
+- Per-class analysis
 
-- raw KneE-PAD recordings;
-- participant-identifiable information;
-- generated `.dat` arrays;
-- model checkpoints;
-- local virtual environments;
-- temporary training outputs.
+## Code and Data Availability
 
-The committed CSV files are lightweight result artifacts intended to make the reported summary independently inspectable.
-
-## Limitations
-
-1. The public dataset remains external to this repository.
-2. The current training scripts contain paths inherited from the original experimental environment and require local path configuration before execution.
-3. The stored results correspond to the exact protocol represented by the committed code and artifacts; changing windowing, folds, normalization, augmentation, or class definitions can produce different results.
-4. High exercise-recognition performance should not be interpreted as equivalent to reliable execution-quality assessment.
-5. This work does not establish clinical efficacy or diagnostic validity.
+The source code and analysis materials used in the study are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here.
 
 ## Citation
 
-When using this code or results, please cite both the associated manuscript and the original KneE-PAD dataset publication.
-
-### Dataset citation
-
-Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, G.  
-*A Knee Rehabilitation Exercises Dataset for Postural Assessment using Wearable Devices.*  
-Scientific Data, 2025.  
-https://doi.org/10.1038/s41597-025-04963-4
-
-## Contact
-
-For questions concerning the research artifact, please use the GitHub repository issue tracker or contact the corresponding author listed in the associated manuscript.
+Please cite the associated paper and the original KneE-PAD dataset publication when using this repository.
