@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: "Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment"
+message: "Research software and evaluation artifacts associated with the manuscript."
+type: software
+authors:
+  - family-names: Abo Alhoda
+    given-names: Esraa Mahmoud Mohamed
+repository-code: "https://github.com/EsraaAsker/knee-pad-multimodal-ml"
+keywords:
+  - knee rehabilitation
+  - wearable sensors
+  - IMU
+  - sEMG
+  - deep learning
+  - multimodal learning
+  - physiological time series
+  - reproducible research
