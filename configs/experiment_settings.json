@@ -1,20 +1,38 @@
 {
   "dataset": "KneE-PAD",
-  "modality": ["IMU", "sEMG"],
+  "modalities": [
+    "IMU",
+    "sEMG"
+  ],
   "imu_channels": 48,
   "emg_channels": 8,
-  "imu_window_samples": 593,
-  "emg_window_samples": 5037,
-  "level1_classes": 3,
-  "level3_classes": 9,
-  "trial_level_split_before_window_expansion": true,
-  "normalization": "training-fold only",
-  "class_weighting": "training-fold only",
-  "architecture": {
+  "windowing": {
+    "imu_window_samples": 593,
+    "fixed_stride_samples": 37,
+    "emg_window_samples": 5037
+  },
+  "tasks": {
+    "level1_classes": 3,
+    "level3_classes": 9,
+    "strict_binary_quality_labels": [
+      "Correct",
+      "Wrong"
+    ]
+  },
+  "validation": {
+    "conventional": "trial-level StratifiedKFold before overlapping-window expansion",
+    "strict": "participant-grouped outer StratifiedGroupKFold with grouped inner validation for epoch selection"
+  },
+  "preprocessing": {
+    "normalization": "training partition only",
+    "augmentation": "small Gaussian signal noise during training"
+  },
+  "model": {
     "temporal_branches": "EMG and IMU CNN",
+    "embedding_dimension": 128,
     "transformer_layers": 2,
     "transformer_heads": 8,
-    "embedding_dimension": 128,
+    "feedforward_dimension": 256,
     "attention_pooling": true
   },
   "training": {
@@ -22,12 +40,18 @@
     "learning_rate": 0.0002,
     "weight_decay": 0.0002,
     "label_smoothing": 0.04,
-    "epochs": 18,
-    "gradient_clipping_norm": 1.0,
-    "augmentation": "small Gaussian signal noise during training"
+    "gradient_clipping_norm": 1
   },
-  "stored_level_results": {
-    "folds": 5,
-    "seed": 2026
+  "seeds": {
+    "conventional": [
+      2026
+    ],
+    "strict": [
+      2026,
+      2027,
+      2028,
+      2029,
+      2030
+    ]
   }
 }
