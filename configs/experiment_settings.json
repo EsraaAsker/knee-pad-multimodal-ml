@@ -1,0 +1,33 @@
+{
+  "dataset": "KneE-PAD",
+  "modality": ["IMU", "sEMG"],
+  "imu_channels": 48,
+  "emg_channels": 8,
+  "imu_window_samples": 593,
+  "emg_window_samples": 5037,
+  "level1_classes": 3,
+  "level3_classes": 9,
+  "trial_level_split_before_window_expansion": true,
+  "normalization": "training-fold only",
+  "class_weighting": "training-fold only",
+  "architecture": {
+    "temporal_branches": "EMG and IMU CNN",
+    "transformer_layers": 2,
+    "transformer_heads": 8,
+    "embedding_dimension": 128,
+    "attention_pooling": true
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0002,
+    "label_smoothing": 0.04,
+    "epochs": 18,
+    "gradient_clipping_norm": 1.0,
+    "augmentation": "small Gaussian signal noise during training"
+  },
+  "stored_level_results": {
+    "folds": 5,
+    "seed": 2026
+  }
+}
