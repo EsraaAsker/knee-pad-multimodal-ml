@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 
 # Portable repository-relative configuration.
-REPO_ROOT = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA = Path(os.environ.get("KNEEPAD_DATA", REPO_ROOT / "data" / "processed" / "deep_data"))
 OUT = Path(os.environ.get("KNEEPAD_OUT", REPO_ROOT / "results" / "levels"))
 OUT.mkdir(parents=True, exist_ok=True)
@@ -20,10 +20,10 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 torch.set_num_threads(max(1, min(8, os.cpu_count() or 2)))
 
-N = 4831
+raw = np.load(DATA / "labels.npy")
+N = len(raw)
 E = np.memmap(DATA / "emg_official.dat", dtype="float32", mode="r", shape=(N, 8, 5037))
 I = np.memmap(DATA / "imu_official.dat", dtype="float32", mode="r", shape=(N, 48, 593))
-raw = np.load(DATA / "labels.npy")
 tids = np.load(DATA / "trial_ids.npy", allow_pickle=True)
 
 def target_for(task):
