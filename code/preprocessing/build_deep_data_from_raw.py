@@ -19,7 +19,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--imu-len", type=int, default=593)
     ap.add_argument("--emg-len", type=int, default=5037)
-    ap.add_argument("--max-label", type=int, default=5)
+    ap.add_argument("--max-label", type=int, default=8)
     args = ap.parse_args()
 
     raw, out = Path(args.raw), Path(args.out)
