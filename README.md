@@ -2,74 +2,72 @@
 
 ## Overview
 
-This repository provides the preprocessing, training, evaluation, and analysis code associated with the study:
+This repository contains the source code, configuration files, and selected result summaries supporting:
 
 **“Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment.”**
 
-The repository contains the code and selected result summaries supporting the experimental framework reported in the paper, including exercise recognition, execution-quality assessment, participant-independent evaluation, and sensor-configuration analysis.
+The repository provides the materials needed to inspect the reported processing and evaluation procedures and to rerun the supported analyses using the publicly available KneE-PAD dataset.
 
-## Dataset
+## Code and Data Availability
 
-The study uses the publicly available **KneE-PAD** dataset:
+The source code and experiment configuration are provided in this repository. The repository includes preprocessing, model training, participant-independent evaluation, sensor-configuration evaluation, and result-aggregation scripts, together with selected machine-readable result summaries.
 
-Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, G.,
-“A Knee Rehabilitation Exercises Dataset for Postural Assessment using Wearable Devices,”
-Scientific Data, 2025.
+The **KneE-PAD** dataset is publicly available from its original publication:
+
+Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, G.,  
+“A Knee Rehabilitation Exercises Dataset for Postural Assessment using Wearable Devices,”  
+*Scientific Data*, 2025.  
 DOI: **10.1038/s41597-025-04963-4**
 
-The dataset is **not redistributed in this repository**. Users should obtain it from its original publication/source and place the required files in the local data directory before running the provided scripts.
+The dataset is **not redistributed in this repository**. Users should obtain the recordings from the original dataset source and provide the local data path required by the scripts.
 
 ## Repository Contents
 
-- `code/preprocessing/` — data preparation, segmentation, and preprocessing.
-- `code/training/` — model training scripts.
-- `code/evaluation/` — validation and performance evaluation.
-- `code/analysis/` — aggregation, diagnostics, and result analysis.
-- `configs/` — experiment settings and reproducibility parameters.
-- `results/` — selected result summaries and diagnostic outputs.
-- `figures/` — figures associated with the reported analyses.
+- `code/preprocessing/` — raw-data preparation and fixed-window construction.
+- `code/training/` — multimodal CNN--Transformer training and participant-independent evaluation.
+- `code/evaluation/` — prediction and trial-level metric aggregation.
+- `code/analysis/` — fold and sensor-configuration result aggregation.
+- `configs/` — experiment settings.
+- `results/summaries/` — selected machine-readable result summaries.
+- `CITATION.cff` — software citation metadata.
 
-## Experimental Protocols
+## Experimental Families
 
-The manuscript distinguishes two experimental families with different evaluation protocols.
+The manuscript reports two distinct experimental families.
 
-### Archived Development and Benchmark Family
+**Archived development and benchmark family.** These experiments use trial-level validation and include the historical model-development/benchmark results reported for contextual comparison.
 
-This family contains the archived development experiments and benchmark results used for contextual comparison in the manuscript, including engineered-feature and raw-sequence model results.
+**Strict participant-independent family.** This evaluation uses participant-grouped outer folds, grouped inner validation for epoch selection, training-only normalization, and evaluation on unseen participants. The strict family is used for the participant-independent squat-quality and predefined sensor-configuration analyses.
 
-### Strict Participant-Independent Family
+Because the task formulation and validation procedures differ between the two families, their reported results are presented separately and are not interchangeable.
 
-This family contains the participant-independent evaluation used to assess generalization to unseen participants. It includes the CNN--Transformer execution-quality experiment and the predefined sensor-configuration analysis.
+## Data Setup
 
-The two families are reported separately because their validation protocols differ and their results are not interchangeable.
+After obtaining KneE-PAD, provide the dataset path to the preprocessing scripts. The expected source layout is:
 
-## Reproducibility
+```
+KneE-PAD/
+└── dataset/
+    └── Subject_*/
+        └── <label>/
+            └── Trial_*/
+                ├── imu.npy
+                └── emg.npy
+```
 
-The repository provides the experiment code and configuration information needed to reproduce the supported analyses from the publicly available dataset.
-
-The documented settings include preprocessing, windowing, validation structure, random seeds, model configuration, and class-weighting strategy.
+The preprocessing code retains the IMU and sEMG arrays together with labels, trial identifiers, and subject identifiers required by the evaluation scripts.
 
 ## Installation
 
-Create a Python environment and install the required dependencies:
+Install the required Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Data Setup
+## Example Workflows
 
-After obtaining the KneE-PAD dataset from its original source, place the required files according to the directory structure expected by the preprocessing scripts and configuration files.
-
-Do not include dataset files in the GitHub repository.
-
-For the processed multimodal workflows, the local data directory contains the processed IMU/EMG arrays together with the corresponding labels, trial identifiers, and subject identifiers.
-
-## Running the Experiments
-
-### 1. Preprocessing
-
-The raw-data preparation scripts accept explicit paths. For example:
+### Preprocessing
 
 ```bash
 python code/preprocessing/build_deep_data_from_raw.py \
@@ -77,7 +75,7 @@ python code/preprocessing/build_deep_data_from_raw.py \
   --out data/processed/deep_data
 ```
 
-For the fixed Squat window representation:
+For the fixed Squat representation:
 
 ```bash
 python code/preprocessing/build_fixed_squat_segments_multimodal.py \
@@ -85,17 +83,7 @@ python code/preprocessing/build_fixed_squat_segments_multimodal.py \
   --out data/processed/fixed_squat_multimodal
 ```
 
-### 2. Model training
-
-The main CNN--Transformer workflows are:
-
-```bash
-KNEEPAD_DATA=data/processed/deep_data \
-KNEEPAD_OUT=results/levels \
-python code/training/train_levels.py
-```
-
-and:
+### Multimodal training/evaluation
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -103,9 +91,7 @@ KNEEPAD_OUT=results/dl_results \
 python code/training/train_multimodal_dl.py
 ```
 
-### 3. Participant-independent evaluation
-
-The strict participant-independent trainer uses participant-grouped outer folds and grouped inner validation:
+### Strict participant-independent evaluation
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -116,9 +102,7 @@ CONFIG=ex0_all_sensors SEED=2026 \
 python code/training/train_subject_predictions.py
 ```
 
-### 4. Sensor-configuration evaluation
-
-The same participant-independent training script supports the predefined sensor configurations through `SUBSET`, for example:
+The same participant-independent script supports the predefined sensor configurations through `SUBSET`, including the two-sensor left thigh--shank configuration:
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -129,25 +113,11 @@ CONFIG=p57 SEED=2026 \
 python code/training/train_subject_predictions.py
 ```
 
-### 5. Result aggregation and diagnostics
+## Reproducibility Scope
 
-Scripts in `code/evaluation/` and `code/analysis/` aggregate fold-level outputs, predictions, confusion matrices, and diagnostic summaries.
+The repository documents the preprocessing, windowing, validation structures, model configuration, training-time class weighting, and evaluation metrics used by the supported analyses.
 
-## Reported Metrics
-
-The repository supports the metrics reported in the paper, including:
-
-- Accuracy
-- Balanced Accuracy
-- Macro-F1
-- Precision
-- Recall
-- Confusion matrices
-- Per-class analysis
-
-## Code and Data Availability
-
-The source code, configuration information, selected result summaries, and diagnostics supporting the revision are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here.
+The archived benchmark results are retained as reported reference results, while the strict participant-independent results are represented by the dedicated participant-grouped evaluation code and summaries.
 
 ## Citation
 
