@@ -99,7 +99,7 @@ python code/training/train_multimodal_dl.py
 ### Strict participant-independent evaluation
 
 ```bash
-KNEEPAD_DATA=/path/to/processed/deep_data \
+KNEEPAD_DATA=/path/to/processed/fixed_squat_multimodal \
 KNEEPAD_OUT=/path/to/output \
 EXERCISE=0 USE_EMG=1 \
 SUBSET='[1,2,3,4,5,6,7,8]' \
@@ -107,7 +107,7 @@ CONFIG=ex0_all_sensors SEED=2026 \
 python code/training/train_subject_predictions.py
 ```
 
-The same participant-independent script accepts the predefined sensor configurations through `SUBSET`, including `[5,7]` for the left thigh--shank configuration.
+The same participant-independent script accepts the predefined sensor configurations through `SUBSET`, including `[5,7]` for the left thigh--shank configuration. For the reported strict squat experiment, use the output of `build_fixed_squat_segments_multimodal.py` as `KNEEPAD_DATA`.
 
 ## Citation
 
