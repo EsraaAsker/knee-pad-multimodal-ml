@@ -6,7 +6,7 @@ This repository provides the preprocessing, training, evaluation, and analysis c
 
 **“Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment.”**
 
-The repository is organized according to the experimental framework described in the paper and includes code for exercise recognition, execution-quality assessment, participant-independent evaluation, and result generation. Historical/provenance notes are documented separately in `REVIEWER_RESPONSE_EVIDENCE.md`.
+The repository contains the code and selected result summaries supporting the experimental framework reported in the paper, including exercise recognition, execution-quality assessment, participant-independent evaluation, and sensor-configuration analysis.
 
 ## Dataset
 
@@ -17,7 +17,7 @@ Kasnesis, P., Plavoukou, T., Syropoulou, A. C., Toumanidis, L., and Georgoudis, 
 Scientific Data, 2025.
 DOI: **10.1038/s41597-025-04963-4**
 
-The dataset is **not redistributed in this repository**. Users should obtain the dataset from its official publication/source and place the required files in the local data directory before running the provided scripts.
+The dataset is **not redistributed in this repository**. Users should obtain it from its original publication/source and place the required files in the local data directory before running the provided scripts.
 
 ## Repository Contents
 
@@ -26,30 +26,28 @@ The dataset is **not redistributed in this repository**. Users should obtain the
 - `code/evaluation/` — validation and performance evaluation.
 - `code/analysis/` — aggregation, diagnostics, and result analysis.
 - `configs/` — experiment settings and reproducibility parameters.
-- `results/` — generated summaries and diagnostic outputs.
+- `results/` — selected result summaries and diagnostic outputs.
 - `figures/` — figures associated with the reported analyses.
 
 ## Experimental Protocols
 
-The repository contains the implementations corresponding to the two experimental families described in the paper:
+The manuscript distinguishes two experimental families with different evaluation protocols.
 
-### Archived Conventional-Validation Family
+### Archived Development and Benchmark Family
 
-This family contains the archived development experiments, including engineered-feature reference results and raw-sequence deep-learning benchmark artifacts used for comparison in the manuscript.
+This family contains the archived development experiments and benchmark results used for contextual comparison in the manuscript, including engineered-feature and raw-sequence model results.
 
 ### Strict Participant-Independent Family
 
-This family contains the participant-independent evaluation used to assess generalization to unseen participants, including the CNN--Transformer experiment and its verified full-sensor result.
+This family contains the participant-independent evaluation used to assess generalization to unseen participants. It includes the CNN--Transformer execution-quality experiment and the predefined sensor-configuration analysis.
 
-Historical reduced-sensor comparisons are documented as provenance/exploratory material and are not represented as equivalent leakage-safe final evidence; see `REVIEWER_RESPONSE_EVIDENCE.md`.
-
-The two experimental families are intentionally kept separate because they use different evaluation protocols and should not be interpreted as interchangeable experiments.
+The two families are reported separately because their validation protocols differ and their results are not interchangeable.
 
 ## Reproducibility
 
-The repository provides the experiment code and configuration information needed to reproduce the reported analyses from the publicly available dataset.
+The repository provides the experiment code and configuration information needed to reproduce the supported analyses from the publicly available dataset.
 
-Experiment settings include the relevant preprocessing parameters, windowing configuration, validation structure, random seeds, model settings, and class-weighting strategy used in the reported experiments.
+The documented settings include preprocessing, windowing, validation structure, random seeds, model configuration, and class-weighting strategy.
 
 ## Installation
 
@@ -59,15 +57,13 @@ Create a Python environment and install the required dependencies:
 pip install -r requirements.txt
 ```
 
-Install the dependencies listed in `requirements.txt`.
-
 ## Data Setup
 
-After obtaining the KneE-PAD dataset from its official source, place the required files according to the expected directory structure documented in the preprocessing scripts/configuration.
+After obtaining the KneE-PAD dataset from its original source, place the required files according to the directory structure expected by the preprocessing scripts and configuration files.
 
-Do not include any dataset files in the GitHub repository.
+Do not include dataset files in the GitHub repository.
 
-For the processed multimodal workflows, the expected local directory contains the processed IMU/EMG arrays together with labels, trial identifiers, and subject identifiers.
+For the processed multimodal workflows, the local data directory contains the processed IMU/EMG arrays together with the corresponding labels, trial identifiers, and subject identifiers.
 
 ## Running the Experiments
 
@@ -91,7 +87,7 @@ python code/preprocessing/build_fixed_squat_segments_multimodal.py \
 
 ### 2. Model training
 
-The main trial-level CNN--Transformer workflows are:
+The main CNN--Transformer workflows are:
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -109,7 +105,7 @@ python code/training/train_multimodal_dl.py
 
 ### 3. Participant-independent evaluation
 
-The strict participant-independent trainer uses participant-grouped outer folds and an inner grouped validation split for epoch selection. A full-sensor Squat configuration is run with:
+The strict participant-independent trainer uses participant-grouped outer folds and grouped inner validation:
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -120,9 +116,9 @@ CONFIG=ex0_all_sensors SEED=2026 \
 python code/training/train_subject_predictions.py
 ```
 
-### 4. Sensor configuration evaluation
+### 4. Sensor-configuration evaluation
 
-The same participant-independent training script supports the predefined sensor configurations through `SUBSET`, for example a two-sensor configuration:
+The same participant-independent training script supports the predefined sensor configurations through `SUBSET`, for example:
 
 ```bash
 KNEEPAD_DATA=data/processed/deep_data \
@@ -135,11 +131,11 @@ python code/training/train_subject_predictions.py
 
 ### 5. Result aggregation and diagnostics
 
-Evaluation and analysis scripts in `code/evaluation/` and `code/analysis/` aggregate fold-level outputs, trial-level predictions, confusion matrices, and diagnostic summaries.
+Scripts in `code/evaluation/` and `code/analysis/` aggregate fold-level outputs, predictions, confusion matrices, and diagnostic summaries.
 
 ## Reported Metrics
 
-The repository supports the evaluation metrics reported in the paper, including:
+The repository supports the metrics reported in the paper, including:
 
 - Accuracy
 - Balanced Accuracy
@@ -151,7 +147,7 @@ The repository supports the evaluation metrics reported in the paper, including:
 
 ## Code and Data Availability
 
-The source code, configuration information, verified result summaries, and selected diagnostics used for the revision are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here. See `REVIEWER_RESPONSE_EVIDENCE.md` for result provenance and explicit exclusions.
+The source code, configuration information, selected result summaries, and diagnostics supporting the revision are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here.
 
 ## Citation
 
