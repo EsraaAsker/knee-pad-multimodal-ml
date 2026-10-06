@@ -6,7 +6,7 @@ This repository provides the preprocessing, training, evaluation, and analysis c
 
 **“Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment.”**
 
-The repository is organized according to the experimental framework described in the paper and includes code for exercise recognition, execution-quality assessment, participant-independent evaluation, sensor-reduction analysis, and result generation.
+The repository is organized according to the experimental framework described in the paper and includes code for exercise recognition, execution-quality assessment, participant-independent evaluation, and result generation. Historical/provenance notes are documented separately in `REVIEWER_RESPONSE_EVIDENCE.md`.
 
 ## Dataset
 
@@ -39,7 +39,9 @@ This family contains the archived development experiments, including engineered-
 
 ### Strict Participant-Independent Family
 
-This family contains the participant-independent evaluation used to assess generalization to unseen participants, including the CNN--Transformer experiments and predefined IMU sensor configurations.
+This family contains the participant-independent evaluation used to assess generalization to unseen participants, including the CNN--Transformer experiment and its verified full-sensor result.
+
+Historical reduced-sensor comparisons are documented as provenance/exploratory material and are not represented as equivalent leakage-safe final evidence; see `REVIEWER_RESPONSE_EVIDENCE.md`.
 
 The two experimental families are intentionally kept separate because they use different evaluation protocols and should not be interpreted as interchangeable experiments.
 
@@ -149,7 +151,7 @@ The repository supports the evaluation metrics reported in the paper, including:
 
 ## Code and Data Availability
 
-The source code and analysis materials used in the study are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here.
+The source code, configuration information, verified result summaries, and selected diagnostics used for the revision are provided in this repository. The KneE-PAD dataset is publicly available from its original source and is not redistributed here. See `REVIEWER_RESPONSE_EVIDENCE.md` for result provenance and explicit exclusions.
 
 ## Citation
 
