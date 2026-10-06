@@ -1,7 +1,0 @@
-experiment,class,class_name,recall,n_trials
-baseline_B_ensemble,0,Correct,0.8471698113207548,530
-baseline_B_ensemble,1,Error-1,0.7383512544802867,279
-baseline_B_ensemble,2,Error-2,0.9962406015037594,266
-ensemble_plus_symmetry,0,Correct,0.869811320754717,530
-ensemble_plus_symmetry,1,Error-1,0.7168458781362007,279
-ensemble_plus_symmetry,2,Error-2,0.9962406015037594,266
