@@ -14,6 +14,7 @@
   "tasks": {
     "level1_classes": 3,
     "level3_classes": 9,
+    "level1_label_mapping": "raw labels 0-2 = squat, 3-5 = extension, 6-8 = gait",
     "strict_binary_quality_labels": [
       "Correct",
       "Wrong"
