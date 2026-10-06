@@ -67,7 +67,7 @@ def main():
         "n_records": n,
         "imu_shape": [n, 48, args.imu_len],
         "emg_shape": [n, 8, args.emg_len],
-        "label_encoding": "raw directory label 0..5 retained",
+        "label_encoding": "raw directory labels 0..8 retained",
         "record_granularity": "one resampled record per Subject/label/Trial",
         "resampling": "linear interpolation over normalized trial time"
     }
