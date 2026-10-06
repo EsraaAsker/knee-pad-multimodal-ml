@@ -20,10 +20,10 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 torch.set_num_threads(max(1, min(8, os.cpu_count() or 2)))
 
+raw_y = np.load(ROOT / "labels.npy")
 N = len(raw_y)
 E = np.memmap(ROOT / "emg_official.dat", dtype="float32", mode="r", shape=(N, 8, 5037))
 I = np.memmap(ROOT / "imu_official.dat", dtype="float32", mode="r", shape=(N, 48, 593))
-raw_y = np.load(ROOT / "labels.npy")
 task = os.environ.get("TASK", "multiclass")
 y = (raw_y != 0).astype(np.int64) if task == "binary" else raw_y
 tids = np.load(ROOT / "trial_ids.npy")
