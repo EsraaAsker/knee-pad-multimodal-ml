@@ -9,7 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 
-REPO_ROOT = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 ROOT = Path(os.environ.get("KNEEPAD_DATA", REPO_ROOT / "data" / "processed" / "deep_data"))
 OUT = Path(os.environ.get("KNEEPAD_OUT", REPO_ROOT / "results" / "dl_results"))
 OUT.mkdir(parents=True, exist_ok=True)
@@ -20,7 +20,7 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 torch.set_num_threads(max(1, min(8, os.cpu_count() or 2)))
 
-N = 4833
+N = len(raw_y)
 E = np.memmap(ROOT / "emg_official.dat", dtype="float32", mode="r", shape=(N, 8, 5037))
 I = np.memmap(ROOT / "imu_official.dat", dtype="float32", mode="r", shape=(N, 48, 593))
 raw_y = np.load(ROOT / "labels.npy")
