@@ -1,7 +1,0 @@
-level,metric,mean,sd,source_csv
-level1,accuracy,0.999376435624163,0.0009249528075791018,level1_fold_metrics.csv
-level1,balanced_accuracy,0.9994395529160762,0.0008282274208665072,level1_fold_metrics.csv
-level1,macro_f1,0.9993980730949952,0.0008584422493545721,level1_fold_metrics.csv
-level3,accuracy,0.7119347367126195,0.06504759427874392,level3_fold_metrics.csv
-level3,balanced_accuracy,0.7629956436467602,0.04514911984763171,level3_fold_metrics.csv
-level3,macro_f1,0.7643318651991133,0.042513479633119536,level3_fold_metrics.csv
