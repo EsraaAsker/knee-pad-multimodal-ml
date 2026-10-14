@@ -1,10 +1,10 @@
-# Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment
+
 
 ## Overview
 
 This repository contains the source code supporting:
 
-**“Beyond a Single Accuracy: A Multidimensional Evaluation of Wearable Knee Rehabilitation Assessment.”**
+
 
 The code covers data preparation, multimodal CNN--Transformer training, participant-independent evaluation, sensor-configuration evaluation, and metric aggregation.
 
